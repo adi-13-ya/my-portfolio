@@ -7,6 +7,23 @@ import FloatingParticles from './components/FloatingParticles';
 import SoundToggle from './components/SoundToggle';
 import ChristmasLights from './components/ChristmasLights';
 import ScrollReveal from './components/ScrollReveal';
+import {
+  IconLightning,
+  IconPortal,
+  IconMind,
+  IconTerminal,
+  IconData,
+  IconGlobe,
+  IconCloud,
+  IconDemoStar,
+  IconGrad,
+  IconScroll,
+  IconPin,
+  IconEnvelope,
+  IconBriefcase,
+  IconDemogorgon,
+  IconHeart,
+} from './components/StrangerIcons';
 
 export default function Home() {
   return (
@@ -40,7 +57,7 @@ export default function Home() {
             Aditya<br />Gujar
           </div>
           <div className="hero-tagline">
-            ⚡ Technologist · AI Enthusiast · Builder ⚡
+            <IconLightning size={22} /> Technologist · AI Enthusiast · Builder <IconLightning size={22} />
           </div>
           <p className="hero-summary">
             Results-driven technologist ranked among the top 5 in IT at VIT, skilled in data structures,
@@ -68,7 +85,15 @@ export default function Home() {
       <ChristmasLights />
 
       {/* ===== ABOUT SECTION ===== */}
-      <section id="about" className="section">
+      <section id="about" className="section section-with-bg">
+        <div className="section-bg-image">
+          <Image
+            src="/images/upside-down-bg.png"
+            alt=""
+            fill
+            style={{ objectFit: 'cover', opacity: 0.08 }}
+          />
+        </div>
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 01</span>
@@ -175,7 +200,15 @@ export default function Home() {
       <ChristmasLights />
 
       {/* ===== PROJECTS SECTION ===== */}
-      <section id="projects" className="section">
+      <section id="projects" className="section section-with-bg">
+        <div className="section-bg-image">
+          <Image
+            src="/images/section-texture-bg.png"
+            alt=""
+            fill
+            style={{ objectFit: 'cover', opacity: 0.06 }}
+          />
+        </div>
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 03</span>
@@ -188,7 +221,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="project-card">
               <span className="project-number">01</span>
-              <h3>🔮 DocLingo: Intelligent Multilingual Document Reasoning System</h3>
+              <h3><IconPortal size={22} /> DocLingo: Intelligent Multilingual Document Reasoning System</h3>
               <div className="project-tech">
                 <span className="tech-tag">Python</span>
                 <span className="tech-tag">FAISS</span>
@@ -209,7 +242,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="project-card">
               <span className="project-number">02</span>
-              <h3>⚡ Credit Card Fraud Detection</h3>
+              <h3><IconLightning size={22} /> Credit Card Fraud Detection</h3>
               <div className="project-tech">
                 <span className="tech-tag">Deep Learning</span>
                 <span className="tech-tag">TensorFlow</span>
@@ -238,7 +271,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="project-card">
               <span className="project-number">03</span>
-              <h3>🌿 Plant Species Detection Platform</h3>
+              <h3><IconMind size={22} /> Plant Species Detection Platform</h3>
               <div className="project-tech">
                 <span className="tech-tag">Computer Vision</span>
                 <span className="tech-tag">PyTorch</span>
@@ -268,7 +301,7 @@ export default function Home() {
         <div className="skills-container">
           <ScrollReveal>
             <div className="skill-category">
-              <div className="skill-category-icon">💻</div>
+              <div className="skill-category-icon"><IconTerminal size={28} /></div>
               <h3>Programming Languages</h3>
               <div className="skill-list">
                 {['Python', 'C', 'C++', 'JavaScript', 'SQL', 'Julia'].map((skill) => (
@@ -280,7 +313,7 @@ export default function Home() {
 
           <ScrollReveal>
             <div className="skill-category">
-              <div className="skill-category-icon">🧠</div>
+              <div className="skill-category-icon"><IconMind size={28} /></div>
               <h3>AI & Machine Learning</h3>
               <div className="skill-list">
                 {['Deep Learning', 'Neural Networks', 'TensorFlow', 'PyTorch', 'Keras', 'Scikit-learn', 'Computer Vision', 'NLP', 'RAG', 'LangChain', 'Prompt Engineering'].map((skill) => (
@@ -292,7 +325,7 @@ export default function Home() {
 
           <ScrollReveal>
             <div className="skill-category">
-              <div className="skill-category-icon">📊</div>
+              <div className="skill-category-icon"><IconData size={28} /></div>
               <h3>Data Science & Analytics</h3>
               <div className="skill-list">
                 {['NumPy', 'Pandas', 'Matplotlib', 'Sentence Transformers', 'OpenAI Embeddings', 'Vector Databases', 'OCR (Tesseract)'].map((skill) => (
@@ -304,7 +337,7 @@ export default function Home() {
 
           <ScrollReveal>
             <div className="skill-category">
-              <div className="skill-category-icon">🌐</div>
+              <div className="skill-category-icon"><IconGlobe size={28} /></div>
               <h3>Web Development</h3>
               <div className="skill-list">
                 {['React.js', 'Next.js', 'Tailwind CSS', 'HTML/CSS', 'Bootstrap', 'RESTful APIs'].map((skill) => (
@@ -316,7 +349,7 @@ export default function Home() {
 
           <ScrollReveal>
             <div className="skill-category">
-              <div className="skill-category-icon">☁️</div>
+              <div className="skill-category-icon"><IconCloud size={28} /></div>
               <h3>Cloud & Tools</h3>
               <div className="skill-list">
                 {['Git', 'GitHub', 'AWS', 'VS Code', 'Jupyter Notebooks', 'Agile Methodologies'].map((skill) => (
@@ -332,7 +365,15 @@ export default function Home() {
       <ChristmasLights />
 
       {/* ===== EDUCATION SECTION ===== */}
-      <section id="education" className="section">
+      <section id="education" className="section section-with-bg">
+        <div className="section-bg-image">
+          <Image
+            src="/images/upside-down-bg.png"
+            alt=""
+            fill
+            style={{ objectFit: 'cover', opacity: 0.05 }}
+          />
+        </div>
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 05</span>
@@ -344,8 +385,8 @@ export default function Home() {
           <div className="education-card">
             <h3>Vellore Institute of Technology (VIT)</h3>
             <h4>Bachelor of Technology in Information Technology</h4>
-            <p style={{ color: 'var(--st-text-dim)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-              📍 Vellore, Tamil Nadu
+            <p style={{ color: 'var(--st-text-dim)', fontSize: '0.85rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <IconPin size={16} /> Vellore, Tamil Nadu
             </p>
             <div className="education-metrics">
               <div className="metric">
@@ -376,21 +417,21 @@ export default function Home() {
         <div className="achievements-list">
           <ScrollReveal>
             <div className="achievement-item">
-              <span className="achievement-icon">🏅</span>
+              <span className="achievement-icon"><IconDemoStar size={24} /></span>
               <p>Placement Coordinator, PAT Committee: Led recruitment drives for 500+ students.</p>
             </div>
           </ScrollReveal>
 
           <ScrollReveal>
             <div className="achievement-item">
-              <span className="achievement-icon">🎓</span>
+              <span className="achievement-icon"><IconGrad size={24} /></span>
               <p>Machine Learning Specialization - DeepLearning.AI, Stanford University.</p>
             </div>
           </ScrollReveal>
 
           <ScrollReveal>
             <div className="achievement-item">
-              <span className="achievement-icon">📜</span>
+              <span className="achievement-icon"><IconScroll size={24} /></span>
               <p>Certified in Fundamentals of Generative AI - IBM Skills Network.</p>
             </div>
           </ScrollReveal>
@@ -401,7 +442,15 @@ export default function Home() {
       <ChristmasLights />
 
       {/* ===== CONTACT SECTION ===== */}
-      <section id="contact" className="section">
+      <section id="contact" className="section section-with-bg">
+        <div className="section-bg-image">
+          <Image
+            src="/images/section-texture-bg.png"
+            alt=""
+            fill
+            style={{ objectFit: 'cover', opacity: 0.07 }}
+          />
+        </div>
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 07</span>
@@ -418,23 +467,15 @@ export default function Home() {
 
             <div className="contact-links">
               <a href="mailto:Aditya.07050@gmail.com" className="contact-link" id="contact-email">
-                <span className="contact-link-icon">📧</span>
+                <span className="contact-link-icon"><IconEnvelope size={24} /></span>
                 <div className="contact-link-text">
                   <div className="contact-link-label">Email</div>
                   <div className="contact-link-value">Aditya.07050@gmail.com</div>
                 </div>
               </a>
 
-              <a href="tel:+919928841899" className="contact-link" id="contact-phone">
-                <span className="contact-link-icon">📱</span>
-                <div className="contact-link-text">
-                  <div className="contact-link-label">Phone</div>
-                  <div className="contact-link-value">+91-9928841899</div>
-                </div>
-              </a>
-
               <a href="https://linkedin.com/in/aditya-gujar-683399220" target="_blank" rel="noopener noreferrer" className="contact-link" id="contact-linkedin">
-                <span className="contact-link-icon">💼</span>
+                <span className="contact-link-icon"><IconBriefcase size={24} /></span>
                 <div className="contact-link-text">
                   <div className="contact-link-label">LinkedIn</div>
                   <div className="contact-link-value">Aditya Gujar</div>
@@ -442,7 +483,7 @@ export default function Home() {
               </a>
 
               <a href="https://github.com/adi-13-ya" target="_blank" rel="noopener noreferrer" className="contact-link" id="contact-github">
-                <span className="contact-link-icon">🐙</span>
+                <span className="contact-link-icon"><IconDemogorgon size={24} /></span>
                 <div className="contact-link-text">
                   <div className="contact-link-label">GitHub</div>
                   <div className="contact-link-value">adi-13-ya</div>
@@ -457,7 +498,7 @@ export default function Home() {
       <footer className="footer">
         <ChristmasLights />
         <p className="footer-text">
-          Built with ❤️ from the <span>Upside Down</span> · Aditya Gujar © 2025
+          <span>Aditya Gujar © 2026</span><br/><IconHeart size={16} />
         </p>
       </footer>
     </>

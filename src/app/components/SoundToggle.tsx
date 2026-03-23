@@ -1,35 +1,40 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getWindow = (): any => typeof window !== 'undefined' ? window : {};
 
 export default function SoundToggle() {
     const [playing, setPlaying] = useState(false);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
 
+    // Sync with the global audio state from IntroScreen
     useEffect(() => {
-        audioRef.current = new Audio('/audio/stranger-things-theme.mp3');
-        audioRef.current.loop = true;
-        audioRef.current.volume = 0.3;
-
-        return () => {
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current = null;
+        const checkInterval = setInterval(() => {
+            const w = getWindow();
+            if (w.__stSynthPlaying !== undefined) {
+                setPlaying(!!w.__stSynthPlaying);
             }
-        };
+        }, 500);
+        return () => clearInterval(checkInterval);
     }, []);
 
     const toggleSound = () => {
-        if (!audioRef.current) return;
+        const w = getWindow();
 
         if (playing) {
-            audioRef.current.pause();
+            // Stop audio
+            if (typeof w.__stSynthStop === 'function') {
+                w.__stSynthStop();
+            }
+            setPlaying(false);
         } else {
-            audioRef.current.play().catch(() => {
-                // Browser blocked autoplay
-            });
+            // Restart audio
+            if (typeof w.__stSynthStart === 'function') {
+                w.__stSynthStart();
+            }
+            setPlaying(true);
         }
-        setPlaying(!playing);
     };
 
     return (
