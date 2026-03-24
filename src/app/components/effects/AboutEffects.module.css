@@ -1,0 +1,46 @@
+/* NEW: About section tooltip and flicker styles — added 2026-03-23 */
+
+.tooltip {
+  position: relative;
+  color: #C0392B;
+  cursor: default;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0d0d0d;
+  color: #C0392B;
+  font-family: monospace;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border: 1px solid #8B0000;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
+
+.flickerBg {
+  animation: flickerBgAnim 400ms ease;
+}
+
+@keyframes flickerBgAnim {
+  0% { background-color: rgba(139, 0, 0, 0); }
+  25% { background-color: rgba(139, 0, 0, 0.08); }
+  50% { background-color: rgba(139, 0, 0, 0); }
+  75% { background-color: rgba(139, 0, 0, 0.05); }
+  100% { background-color: rgba(139, 0, 0, 0); }
+}
+
+.deepLearningHover {
+  color: #C0392B;
+  cursor: default;
+}

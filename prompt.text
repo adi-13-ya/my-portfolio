@@ -1,0 +1,303 @@
+You are improving an existing Stranger Things-themed ML/AI Engineer portfolio 
+built in Next.js. The codebase is already partially styled and working.
+
+════════════════════════════════════════════
+CRITICAL RULES — READ BEFORE TOUCHING ANYTHING
+════════════════════════════════════════════
+
+1. AUDIT BEFORE EDITING
+   Before changing any file, read it completely. Understand what it currently 
+   does. List every existing feature, animation, and style you find in it.
+
+2. PRESERVE EVERYTHING EXISTING
+   The flickering text and Christmas lights effects are already implemented 
+   and working. DO NOT remove, rewrite, or replace them. Only build on top.
+
+3. NEW FEATURES = NEW FILES
+   Every new feature must live in its own new component file under 
+   /components/effects/ or /components/ui/. Then import it into the 
+   existing section component. Never paste new logic directly into 
+   existing files unless it is a one-line import or a small style addition.
+
+4. ONE SECTION AT A TIME
+   Complete one section fully — audit, create new files, import, test — 
+   before moving to the next. After each section, summarize exactly:
+   - Which new files were created
+   - Which existing files were modified (and what the only change was)
+   - What existing code was intentionally left untouched
+
+5. NO PACKAGE CHANGES WITHOUT ASKING
+   If a new effect requires a package that is not already in package.json, 
+   list what is needed and wait for confirmation before installing.
+
+6. STYLE ADDITIONS ONLY
+   For CSS/Tailwind changes in existing files, only append new classes or 
+   new CSS blocks. Never delete or rename existing class names.
+
+════════════════════════════════════════════
+COLOR PALETTE (do not deviate)
+════════════════════════════════════════════
+
+--st-black:      #0d0d0d
+--st-red:        #C0392B
+--st-red-dark:   #8B0000
+--st-red-glow:   rgba(192, 57, 43, 0.5)
+--st-white:      #f0f0f0
+--st-amber:      #E8B86D   (Christmas light accent only)
+
+════════════════════════════════════════════
+SECTION 1 — HERO / LANDING
+════════════════════════════════════════════
+
+Step 1: Read the existing Hero component fully. Note every class, 
+        animation, and element already there.
+
+Step 2: Create /components/effects/HeroParticleField.tsx
+        - React Three Fiber <Canvas> absolutely positioned behind hero content
+        - 1500 instanced small sphere particles (white/red, ~60/40 split)
+        - Particles drift slowly upward (Upside Down ash effect)
+        - Particles within 120px of mouse cursor gently repel via force 
+          in useFrame
+        - Wrap in React.lazy + Suspense with a null fallback (no layout shift)
+        - Canvas style: position absolute, inset 0, pointerEvents none, 
+          zIndex 0
+
+Step 3: Create /components/effects/UpsideDownOverlay.tsx
+        - A full-section div with hero-bg atmosphere: radial gradient 
+          from rgba(80,0,0,0.45) at center to #0d0d0d at edges
+        - Position absolute, inset 0, zIndex 1, pointerEvents none
+        - This sits between the particle canvas (z0) and hero text (z2)
+
+Step 4: In the existing Hero component:
+        - Import and place <HeroParticleField /> before all existing content
+        - Import and place <UpsideDownOverlay /> after HeroParticleField
+        - Ensure existing hero text container has position: relative, zIndex 2
+        - Add one new line only: a scroll hint below existing content —
+          small text "scroll to enter the lab" in red monospace, 
+          with a CSS bouncing arrow, that fades out after 80px scroll 
+          (useEffect + scroll listener, remove listener on cleanup)
+
+════════════════════════════════════════════
+SECTION 2 — CUSTOM CURSOR
+════════════════════════════════════════════
+
+Step 1: Create /components/effects/MindFlayerCursor.tsx
+        - Hide default cursor globally via a <style> tag injected in this 
+          component (cursor: none on *)
+        - Outer ring: 28px circle, border 1.5px solid #C0392B
+          Follows mouse with lerp factor 0.12 (smooth lag)
+        - Inner dot: 6px solid #C0392B, follows mouse exactly (no lag)
+        - On hover over any <a> or <button>: outer ring scales to 2x, 
+          fills rgba(139,0,0,0.15), inner dot opacity 0
+        - Framer Motion pulse on outer ring: scale 1→1.15→1, 2s loop, ease
+        - On click: 4 short lines radiate outward from cursor position 
+          using a CSS keyframe burst div, auto-removed after 300ms
+        - Use useEffect to attach mousemove listener, clean up on unmount
+
+Step 2: Import <MindFlayerCursor /> into the root layout file (layout.tsx) 
+        as the very first child inside <body>. No other changes to layout.tsx.
+
+════════════════════════════════════════════
+SECTION 3 — ABOUT ME
+════════════════════════════════════════════
+
+Step 1: Read the existing About component. Note the layout (columns, text, 
+        images) and all existing classes. Do not touch them.
+
+Step 2: Create /components/effects/FloatingBrainModel.tsx
+        - R3F Canvas with a procedural icosahedron geometry 
+          (IcosahedronGeometry, detail 1) as a brain stand-in
+        - Material: MeshBasicMaterial wireframe, color #C0392B
+        - <Float> from Drei: speed 1.5, rotationIntensity 0.4, floatIntensity 1
+        - On mouse enter the section (ref passed as prop): mesh slowly 
+          rotates toward cursor using useFrame lerp
+        - Canvas: 300×300px, transparent background, pointerEvents none
+
+Step 3: Create /components/effects/DemogorgonWatermark.tsx
+        - A single <img> tag: src="/images/demogorgon-silhouette.png"
+        - Style: position absolute, bottom 16px, right 16px, 
+          width 80px, opacity 0.08, pointerEvents none, zIndex 0
+        - If the image doesn't exist yet, render an SVG placeholder: 
+          a simple radial burst of 5 elongated petals in #8B0000 at 8% opacity
+
+Step 4: In the existing About component:
+        - Add position: relative to the section wrapper (if not present)
+        - Import and render <FloatingBrainModel /> inside the right column 
+          (or after the main text block if layout is single-column)
+        - Import and render <DemogorgonWatermark /> as the last child of 
+          the section wrapper
+        - Add hover easter eggs ONLY to these two specific phrases in the 
+          existing text (wrap in span, do not change surrounding markup):
+            "neural networks" → tooltip on hover: 
+              <span data-tooltip="011 was here"> styled in red monospace, 
+              appears via CSS ::after, no JS needed
+            "deep learning" → on hover triggers a 400ms CSS class toggle 
+              .flicker-bg on the section (add that class and keyframe 
+              to the component's module CSS or a new CSS file, never 
+              to a global stylesheet)
+
+════════════════════════════════════════════
+SECTION 4 — PROJECTS
+════════════════════════════════════════════
+
+Step 1: Read the existing Projects component and each ProjectCard component. 
+        Note all existing hover states and image handling.
+
+Step 2: Create /components/effects/TiltCard.tsx
+        - A wrapper div that accepts children
+        - On mousemove: calculate cursor position relative to card bounds,  
+          apply CSS transform perspective(1000px) rotateX(Ydeg) rotateY(Xdeg) 
+          max ±8deg, using requestAnimationFrame for smoothness
+        - On mouseleave: reset transform to identity with 400ms CSS transition
+        - A specular highlight child div (absolute, 120px circle, 
+          radial-gradient white→transparent, opacity 0.07) that tracks 
+          cursor position within the card
+        - Exports as a simple wrapper: <TiltCard>{children}</TiltCard>
+
+Step 3: Create /components/effects/ProjectCardOverlay.tsx
+        - Accepts: imageSrc, altText as props
+        - Renders the project image with a CSS duotone filter by default:
+          filter: sepia(1) saturate(2) hue-rotate(300deg) brightness(0.4)
+          (produces dark red/black duotone)
+        - On hover: filter transitions to none over 400ms
+        - A "// classified" badge: absolute top-right, red monospace, 
+          font-size 10px, bg #0d0d0d, border 1px solid #8B0000, padding 2px 6px
+
+Step 4: In the existing Projects component:
+        - Wrap each existing project card with <TiltCard>
+        - Replace each project image element with <ProjectCardOverlay> 
+          passing the same src and alt values already in the code
+        - Add a top accent bar to each card: border-top: 4px solid #C0392B 
+          added as an inline style or appended Tailwind class — 
+          do not change any other card styles
+        - Add scroll entrance: import gsap + ScrollTrigger, register plugin,
+          in a useEffect add a fromTo tween for odd-indexed cards 
+          (x: -60 → 0) and even-indexed cards (x: 60 → 0), opacity 0→1,
+          stagger 0.15, triggered by ScrollTrigger on the cards container.
+          Clean up ScrollTrigger instances in the useEffect return.
+
+════════════════════════════════════════════
+SECTION 5 — SKILLS
+════════════════════════════════════════════
+
+Step 1: Read the existing Skills component. Note how skills are currently 
+        listed and what card/chip structure exists.
+
+Step 2: Create /components/effects/SkillGlobe.tsx
+        - R3F Canvas, 400×400px, transparent bg
+        - A sphere (SphereGeometry r=2, wireframe) with MeshBasicMaterial, 
+          color #8B0000, wireframe true
+        - Each skill name rendered as a <Html> label from Drei, positioned 
+          on the sphere surface using spherical coordinates 
+          (distribute evenly using fibonacci sphere algorithm)
+        - Html labels: font-size 11px, color #f0f0f0, bg rgba(13,13,13,0.7), 
+          padding 2px 6px, border-radius 3px, pointer-events auto
+        - OrbitControls: auto-rotate true, autoRotateSpeed 0.6, 
+          enableZoom false, enablePan false
+        - Accept a skills: string[] prop
+
+Step 3: Create /components/effects/SkillCardGlow.tsx
+        - A wrapper div for individual skill cards/chips
+        - On hover: an SVG border overlay animates a red stroke around the 
+          card perimeter using stroke-dashoffset (draw-on effect, 600ms)
+        - On hover: child icon/emoji scales to 1.1, filter: drop-shadow 
+          (0 0 6px #C0392B)
+        - Exports as <SkillCardGlow>{children}</SkillCardGlow>
+
+Step 4: In the existing Skills component:
+        - Import <SkillGlobe /> and render it alongside the existing skills 
+          list (place it in a new row or column depending on current layout)
+        - Pass the existing skills array as the skills prop
+        - Wrap each existing skill card/chip with <SkillCardGlow>
+        - Do not change the existing card markup inside each chip
+
+════════════════════════════════════════════
+SECTION 6 — EXPERIENCE / TIMELINE
+════════════════════════════════════════════
+
+Step 1: Read the existing Experience/Timeline component fully.
+
+Step 2: Create /components/effects/TimelineWire.tsx
+        - A vertical div: width 2px, bg #C0392B, 
+          box-shadow: 0 0 8px #C0392B, 0 0 2px #C0392B
+        - Height starts at 0, animates to 100% using GSAP ScrollTrigger 
+          scaleY from 0→1, transformOrigin: top center
+        - ScrollTrigger: scrub 1, start "top 60%", end "bottom 40%"
+        - Positioned absolutely in the center of the timeline section
+
+Step 3: Create /components/effects/TimelineNodePop.tsx
+        - Accepts: children, index (number) as props
+        - Wraps each timeline entry
+        - On ScrollTrigger enter: animates from opacity 0, 
+          scale 0.85, y 20 → opacity 1, scale 1, y 0
+        - Delay: index * 0.12s so entries pop in sequentially
+        - Uses gsap.fromTo with a ScrollTrigger trigger on the node itself
+
+Step 4: In the existing Experience component:
+        - Import <TimelineWire /> and place it as a centered absolute 
+          element within the timeline section wrapper 
+          (add position: relative to section if not present)
+        - Wrap each existing timeline entry with 
+          <TimelineNodePop index={i}>
+        - For each entry's company name: add the CSS class .st-flicker 
+          (define this class in a new TimelineNodePop.module.css — 
+          randomly flickers opacity between 0.7 and 1 via keyframes)
+        - Role title and dates: leave completely unchanged
+
+════════════════════════════════════════════
+SECTION 7 — CONTACT
+════════════════════════════════════════════
+
+Step 1: Read the existing Contact component fully. Note the form structure, 
+        input names, validation, and submit handler — preserve all of it.
+
+Step 2: Create /components/effects/ContactParticles.tsx
+        - R3F Canvas, absolutely positioned, inset 0, pointerEvents none, 
+          zIndex 0, transparent
+        - 800 small red/crimson particles drifting slowly (Eleven void aesthetic)
+        - Slower and sparser than the hero particles — more meditative
+        - Wrap in React.lazy + Suspense, null fallback
+
+Step 3: Create /components/effects/DemogorgonButton.tsx
+        - Accepts: onClick, children, disabled, type props
+        - Renders a <button> with existing submit styling passed via className prop
+        - On hover: 5 SVG petal shapes animate outward from button center 
+          using clip-path or transform scale+translate (CSS keyframes, 400ms)
+          Petals: elongated ellipses, color #8B0000, opacity 0.6, 
+          positioned absolute around button center
+        - Button label slot: renders {children} (so existing label is preserved)
+        - On successful submit (accept a success: boolean prop): 
+          show text below button "message received // gate opening..." 
+          in red monospace, fade in over 300ms
+
+Step 4: In the existing Contact component:
+        - Add position: relative, overflow: hidden to section wrapper
+        - Import and render <ContactParticles /> as first child of section
+        - Ensure all form content has position: relative, zIndex 1
+        - Replace the existing submit button element with <DemogorgonButton> 
+          passing the same onClick/type/disabled props and the same label text 
+          as children
+        - Pass success={submitSuccess} (or whatever the existing success 
+          state variable is named — read it from the component first)
+        - Input focus styles: append to existing input classes only — 
+          add focus:shadow-[0_0_0_2px_rgba(192,57,43,0.5)] 
+          or equivalent CSS-in-JS. Do not remove existing focus styles.
+
+════════════════════════════════════════════
+FINAL CHECKLIST — after all sections are done
+════════════════════════════════════════════
+
+[ ] All new R3F canvases are wrapped in React.lazy + Suspense
+[ ] No existing flickering text or Christmas lights code was modified
+[ ] prefers-reduced-motion: add a single shared hook 
+    /hooks/useReducedMotion.ts that returns true if the user prefers 
+    reduced motion. Import it in HeroParticleField, SkillGlobe, 
+    TimelineWire, ContactParticles — if true, render null instead 
+    of the animation.
+[ ] All GSAP ScrollTrigger instances are killed in useEffect cleanup
+[ ] cursor: none is only set inside MindFlayerCursor, nowhere else
+[ ] No global CSS files were modified
+[ ] Every new component file has a brief comment at the top: 
+    // NEW: [component name] — added [date]. Existing files untouched 
+    except for import lines.
+    

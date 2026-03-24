@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CursorWrapper from "./components/effects/CursorWrapper";
+
 
 export const metadata: Metadata = {
   title: "Aditya Gujar | Portfolio from the Upside Down",
@@ -25,6 +27,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
+        <CursorWrapper />
         {children}
       </body>
     </html>

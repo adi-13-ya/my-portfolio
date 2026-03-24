@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { lazy, Suspense, useRef, useEffect, useState } from 'react';
 import IntroScreen from './components/IntroScreen';
 import Navbar from './components/Navbar';
 import FloatingParticles from './components/FloatingParticles';
@@ -25,7 +26,87 @@ import {
   IconHeart,
 } from './components/StrangerIcons';
 
+// Section 1 — Hero effects
+import UpsideDownOverlay from './components/effects/UpsideDownOverlay';
+import ScrollHint from './components/effects/ScrollHint';
+const HeroParticleField = lazy(() => import('./components/effects/HeroParticleField'));
+
+// Section 3 — About effects
+import DemogorgonWatermark from './components/effects/DemogorgonWatermark';
+import aboutStyles from './components/effects/AboutEffects.module.css';
+const FloatingBrainModel = lazy(() => import('./components/effects/FloatingBrainModel'));
+
+// Section 4 — Projects effects
+import TiltCard from './components/effects/TiltCard';
+import ProjectCardOverlay from './components/effects/ProjectCardOverlay';
+
+// Section 5 — Skills effects
+import SkillCardGlow from './components/effects/SkillCardGlow';
+const SkillGlobe = lazy(() => import('./components/effects/SkillGlobe'));
+
+// Section 6 — Experience / Timeline effects
+import TimelineWire from './components/effects/TimelineWire';
+import TimelineNodePop from './components/effects/TimelineNodePop';
+import timelineStyles from './components/effects/TimelineNodePop.module.css';
+
+// Section 7 — Contact effects
+import DemogorgonButton from './components/effects/DemogorgonButton';
+const ContactParticles = lazy(() => import('./components/effects/ContactParticles'));
+
+// GSAP for project scroll entrance
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
+
+// All skills for the globe
+const allSkills = [
+  'Python', 'C', 'C++', 'JavaScript', 'SQL', 'Julia',
+  'Deep Learning', 'Neural Networks', 'TensorFlow', 'PyTorch', 'Keras',
+  'Scikit-learn', 'Computer Vision', 'NLP', 'RAG', 'LangChain',
+  'Prompt Engineering', 'NumPy', 'Pandas', 'Matplotlib',
+  'Sentence Transformers', 'OpenAI Embeddings', 'Vector Databases',
+  'OCR (Tesseract)', 'React.js', 'Next.js', 'Tailwind CSS', 'HTML/CSS',
+  'Bootstrap', 'RESTful APIs', 'Git', 'GitHub', 'AWS', 'VS Code',
+  'Jupyter Notebooks', 'Agile Methodologies',
+];
+
 export default function Home() {
+  const projectsGridRef = useRef<HTMLDivElement>(null);
+  const aboutSectionRef = useRef<HTMLElement>(null);
+  const [flickerBg, setFlickerBg] = useState(false);
+
+  // GSAP scroll entrance for project cards
+  useEffect(() => {
+    if (!projectsGridRef.current) return;
+
+    const cards = projectsGridRef.current.querySelectorAll('.project-card-wrapper');
+    const triggers: ScrollTrigger[] = [];
+
+    cards.forEach((card, i) => {
+      const fromX = i % 2 === 0 ? -60 : 60;
+      const anim = gsap.fromTo(
+        card,
+        { x: fromX, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+    });
+
+    return () => {
+      triggers.forEach((st) => st.kill());
+    };
+  }, []);
+
   return (
     <>
       {/* ===== INTRO SCREEN ===== */}
@@ -41,7 +122,15 @@ export default function Home() {
       <SoundToggle />
 
       {/* ===== HERO SECTION ===== */}
-      <section id="hero" className="hero">
+      <section id="hero" className="hero" style={{ position: 'relative' }}>
+        {/* Hero Particle Field — z0 */}
+        <Suspense fallback={null}>
+          <HeroParticleField />
+        </Suspense>
+
+        {/* Upside Down Overlay — z1 */}
+        <UpsideDownOverlay />
+
         <div className="hero-bg">
           <Image
             src="/images/stranger-things-bg.png"
@@ -52,7 +141,7 @@ export default function Home() {
           />
         </div>
         <div className="scanline-overlay" />
-        <div className="hero-content">
+        <div className="hero-content" style={{ position: 'relative', zIndex: 2 }}>
           <div className="hero-name">
             Aditya<br />Gujar
           </div>
@@ -79,13 +168,21 @@ export default function Home() {
             </a>
           </div>
         </div>
+
+        {/* Scroll hint */}
+        <ScrollHint />
       </section>
 
       {/* ===== CHRISTMAS LIGHTS DIVIDER ===== */}
       <ChristmasLights />
 
       {/* ===== ABOUT SECTION ===== */}
-      <section id="about" className="section section-with-bg">
+      <section
+        id="about"
+        ref={aboutSectionRef}
+        className={`section section-with-bg ${flickerBg ? aboutStyles.flickerBg : ''}`}
+        style={{ position: 'relative' }}
+      >
         <div className="section-bg-image">
           <Image
             src="/images/upside-down-bg.png"
@@ -125,9 +222,23 @@ export default function Home() {
                 intelligent systems that push boundaries.
               </p>
               <p>
-                My journey through the world of technology has equipped me with expertise in AI/ML, deep learning,
+                My journey through the world of technology has equipped me with expertise in AI/ML,{' '}
+                <span
+                  className={aboutStyles.deepLearningHover}
+                  onMouseEnter={() => setFlickerBg(true)}
+                  onMouseLeave={() => setFlickerBg(false)}
+                >
+                  deep learning
+                </span>,
                 and full-stack development. I thrive on transforming raw data into meaningful insights and
-                building applications that make a real-world impact.
+                building applications powered by{' '}
+                <span
+                  className={aboutStyles.tooltip}
+                  data-tooltip="011 was here"
+                >
+                  neural networks
+                </span>{' '}
+                that make a real-world impact.
               </p>
               <div className="about-stats">
                 <div className="stat-item">
@@ -143,16 +254,24 @@ export default function Home() {
                   <span className="stat-label">Projects</span>
                 </div>
               </div>
+
+              {/* FloatingBrainModel */}
+              <Suspense fallback={null}>
+                <FloatingBrainModel />
+              </Suspense>
             </div>
           </ScrollReveal>
         </div>
+
+        {/* DemogorgonWatermark */}
+        <DemogorgonWatermark />
       </section>
 
       {/* ===== CHRISTMAS LIGHTS DIVIDER ===== */}
       <ChristmasLights />
 
       {/* ===== EXPERIENCE SECTION ===== */}
-      <section id="experience" className="section">
+      <section id="experience" className="section" style={{ position: 'relative' }}>
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 02</span>
@@ -160,14 +279,17 @@ export default function Home() {
           </div>
         </ScrollReveal>
 
-        <div className="timeline">
-          <ScrollReveal>
+        <div className="timeline" style={{ position: 'relative' }}>
+          {/* Animated timeline wire */}
+          <TimelineWire />
+
+          <TimelineNodePop index={0}>
             <div className="timeline-item">
               <div className="timeline-dot" />
               <div className="timeline-date">June 2025 – August 2025</div>
               <div className="timeline-card">
                 <h3>Frontend Development Intern</h3>
-                <h4>Raniac (Remote)</h4>
+                <h4 className={timelineStyles.stFlicker}>Raniac (Remote)</h4>
                 <ul>
                   <li>Developed and deployed responsive web interfaces using React.js, Next.js, and Tailwind CSS, improving load speed by 35%.</li>
                   <li>Built reusable UI components and applied modular design patterns, cutting code redundancy.</li>
@@ -176,23 +298,23 @@ export default function Home() {
                 </ul>
               </div>
             </div>
-          </ScrollReveal>
+          </TimelineNodePop>
 
           {/* Placeholder for future experience */}
-          <ScrollReveal>
+          <TimelineNodePop index={1}>
             <div className="timeline-item">
               <div className="timeline-dot" />
               <div className="timeline-date">Your Next Adventure Awaits</div>
               <div className="timeline-card">
                 <h3>The Gate Is Open...</h3>
-                <h4>The Upside Down</h4>
+                <h4 className={timelineStyles.stFlicker}>The Upside Down</h4>
                 <ul>
                   <li>Ready to explore new dimensions of technology and innovation.</li>
                   <li>Seeking opportunities to build intelligent systems that bridge worlds.</li>
                 </ul>
               </div>
             </div>
-          </ScrollReveal>
+          </TimelineNodePop>
         </div>
       </section>
 
@@ -216,73 +338,79 @@ export default function Home() {
           </div>
         </ScrollReveal>
 
-        <div className="projects-grid">
+        <div className="projects-grid" ref={projectsGridRef}>
           {/* Project 1: DocLingo */}
-          <ScrollReveal>
-            <div className="project-card">
-              <span className="project-number">01</span>
-              <h3><IconPortal size={22} /> DocLingo: Intelligent Multilingual Document Reasoning System</h3>
-              <div className="project-tech">
-                <span className="tech-tag">Python</span>
-                <span className="tech-tag">FAISS</span>
-                <span className="tech-tag">LLMs</span>
-                <span className="tech-tag">NLP</span>
-                <span className="tech-tag">OCR</span>
+          <div className="project-card-wrapper" style={{ opacity: 0 }}>
+            <TiltCard>
+              <div className="project-card" style={{ borderTop: '4px solid #C0392B' }}>
+                <span className="project-number">01</span>
+                <h3><IconPortal size={22} /> DocLingo: Intelligent Multilingual Document Reasoning System</h3>
+                <div className="project-tech">
+                  <span className="tech-tag">Python</span>
+                  <span className="tech-tag">FAISS</span>
+                  <span className="tech-tag">LLMs</span>
+                  <span className="tech-tag">NLP</span>
+                  <span className="tech-tag">OCR</span>
+                </div>
+                <ul>
+                  <li>Built a modular RAG pipeline for multilingual document question answering with OCR-based text extraction and semantic search.</li>
+                  <li>Implemented intent-based routing to specialized LLM engines with FAISS vector indexing for accurate context retrieval.</li>
+                  <li>Designed an adaptive decision engine with dynamic retrieval depth and adaptive translation strategies.</li>
+                  <li>Added explicit language control, explainability, confidence scoring, and feedback-driven optimization.</li>
+                </ul>
               </div>
-              <ul>
-                <li>Built a modular RAG pipeline for multilingual document question answering with OCR-based text extraction and semantic search.</li>
-                <li>Implemented intent-based routing to specialized LLM engines with FAISS vector indexing for accurate context retrieval.</li>
-                <li>Designed an adaptive decision engine with dynamic retrieval depth and adaptive translation strategies.</li>
-                <li>Added explicit language control, explainability, confidence scoring, and feedback-driven optimization.</li>
-              </ul>
-            </div>
-          </ScrollReveal>
+            </TiltCard>
+          </div>
 
           {/* Project 2: Credit Card Fraud Detection */}
-          <ScrollReveal>
-            <div className="project-card">
-              <span className="project-number">02</span>
-              <h3><IconLightning size={22} /> Credit Card Fraud Detection</h3>
-              <div className="project-tech">
-                <span className="tech-tag">Deep Learning</span>
-                <span className="tech-tag">TensorFlow</span>
-                <span className="tech-tag">Keras</span>
-                <span className="tech-tag">Python</span>
-              </div>
-              <ul>
-                <li>Built and optimized a deep learning classification model on an imbalanced financial dataset.</li>
-                <li>Implemented data preprocessing, feature scaling, class weighting, and early stopping.</li>
-                <li>Conducted evaluation via ROC-AUC, confusion matrix, and Precision-Recall analysis.</li>
-              </ul>
-              <div className="project-achievements">
-                <div className="achievement">
-                  <div className="achievement-value">98.7%</div>
-                  <div className="achievement-label">Accuracy</div>
+          <div className="project-card-wrapper" style={{ opacity: 0 }}>
+            <TiltCard>
+              <div className="project-card" style={{ borderTop: '4px solid #C0392B' }}>
+                <span className="project-number">02</span>
+                <h3><IconLightning size={22} /> Credit Card Fraud Detection</h3>
+                <div className="project-tech">
+                  <span className="tech-tag">Deep Learning</span>
+                  <span className="tech-tag">TensorFlow</span>
+                  <span className="tech-tag">Keras</span>
+                  <span className="tech-tag">Python</span>
                 </div>
-                <div className="achievement">
-                  <div className="achievement-value">99.5%</div>
-                  <div className="achievement-label">F1 Score</div>
+                <ul>
+                  <li>Built and optimized a deep learning classification model on an imbalanced financial dataset.</li>
+                  <li>Implemented data preprocessing, feature scaling, class weighting, and early stopping.</li>
+                  <li>Conducted evaluation via ROC-AUC, confusion matrix, and Precision-Recall analysis.</li>
+                </ul>
+                <div className="project-achievements">
+                  <div className="achievement">
+                    <div className="achievement-value">98.7%</div>
+                    <div className="achievement-label">Accuracy</div>
+                  </div>
+                  <div className="achievement">
+                    <div className="achievement-value">99.5%</div>
+                    <div className="achievement-label">F1 Score</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </ScrollReveal>
+            </TiltCard>
+          </div>
 
           {/* Project 3: Plant Species Detection */}
-          <ScrollReveal>
-            <div className="project-card">
-              <span className="project-number">03</span>
-              <h3><IconMind size={22} /> Plant Species Detection Platform</h3>
-              <div className="project-tech">
-                <span className="tech-tag">Computer Vision</span>
-                <span className="tech-tag">PyTorch</span>
+          <div className="project-card-wrapper" style={{ opacity: 0 }}>
+            <TiltCard>
+              <div className="project-card" style={{ borderTop: '4px solid #C0392B' }}>
+                <span className="project-number">03</span>
+                <h3><IconMind size={22} /> Plant Species Detection Platform</h3>
+                <div className="project-tech">
+                  <span className="tech-tag">Computer Vision</span>
+                  <span className="tech-tag">PyTorch</span>
+                </div>
+                <ul>
+                  <li>Developed a CNN-based image classification model to identify plant species from 14K+ leaf images.</li>
+                  <li>Applied data augmentation, normalization, and transfer learning to improve model generalization.</li>
+                  <li>Implemented model inference pipeline for image upload and prediction with clear class confidence outputs.</li>
+                </ul>
               </div>
-              <ul>
-                <li>Developed a CNN-based image classification model to identify plant species from 14K+ leaf images.</li>
-                <li>Applied data augmentation, normalization, and transfer learning to improve model generalization.</li>
-                <li>Implemented model inference pipeline for image upload and prediction with clear class confidence outputs.</li>
-              </ul>
-            </div>
-          </ScrollReveal>
+            </TiltCard>
+          </div>
         </div>
       </section>
 
@@ -294,9 +422,14 @@ export default function Home() {
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 04</span>
-            <h2 className="section-title">Skills & Powers</h2>
+            <h2 className="section-title">Skills &amp; Powers</h2>
           </div>
         </ScrollReveal>
+
+        {/* SkillGlobe */}
+        <Suspense fallback={null}>
+          <SkillGlobe skills={allSkills} />
+        </Suspense>
 
         <div className="skills-container">
           <ScrollReveal>
@@ -305,7 +438,9 @@ export default function Home() {
               <h3>Programming Languages</h3>
               <div className="skill-list">
                 {['Python', 'C', 'C++', 'JavaScript', 'SQL', 'Julia'].map((skill) => (
-                  <span key={skill} className="skill-item">{skill}</span>
+                  <SkillCardGlow key={skill}>
+                    <span className="skill-item">{skill}</span>
+                  </SkillCardGlow>
                 ))}
               </div>
             </div>
@@ -314,10 +449,12 @@ export default function Home() {
           <ScrollReveal>
             <div className="skill-category">
               <div className="skill-category-icon"><IconMind size={28} /></div>
-              <h3>AI & Machine Learning</h3>
+              <h3>AI &amp; Machine Learning</h3>
               <div className="skill-list">
                 {['Deep Learning', 'Neural Networks', 'TensorFlow', 'PyTorch', 'Keras', 'Scikit-learn', 'Computer Vision', 'NLP', 'RAG', 'LangChain', 'Prompt Engineering'].map((skill) => (
-                  <span key={skill} className="skill-item">{skill}</span>
+                  <SkillCardGlow key={skill}>
+                    <span className="skill-item">{skill}</span>
+                  </SkillCardGlow>
                 ))}
               </div>
             </div>
@@ -326,10 +463,12 @@ export default function Home() {
           <ScrollReveal>
             <div className="skill-category">
               <div className="skill-category-icon"><IconData size={28} /></div>
-              <h3>Data Science & Analytics</h3>
+              <h3>Data Science &amp; Analytics</h3>
               <div className="skill-list">
                 {['NumPy', 'Pandas', 'Matplotlib', 'Sentence Transformers', 'OpenAI Embeddings', 'Vector Databases', 'OCR (Tesseract)'].map((skill) => (
-                  <span key={skill} className="skill-item">{skill}</span>
+                  <SkillCardGlow key={skill}>
+                    <span className="skill-item">{skill}</span>
+                  </SkillCardGlow>
                 ))}
               </div>
             </div>
@@ -341,7 +480,9 @@ export default function Home() {
               <h3>Web Development</h3>
               <div className="skill-list">
                 {['React.js', 'Next.js', 'Tailwind CSS', 'HTML/CSS', 'Bootstrap', 'RESTful APIs'].map((skill) => (
-                  <span key={skill} className="skill-item">{skill}</span>
+                  <SkillCardGlow key={skill}>
+                    <span className="skill-item">{skill}</span>
+                  </SkillCardGlow>
                 ))}
               </div>
             </div>
@@ -350,10 +491,12 @@ export default function Home() {
           <ScrollReveal>
             <div className="skill-category">
               <div className="skill-category-icon"><IconCloud size={28} /></div>
-              <h3>Cloud & Tools</h3>
+              <h3>Cloud &amp; Tools</h3>
               <div className="skill-list">
                 {['Git', 'GitHub', 'AWS', 'VS Code', 'Jupyter Notebooks', 'Agile Methodologies'].map((skill) => (
-                  <span key={skill} className="skill-item">{skill}</span>
+                  <SkillCardGlow key={skill}>
+                    <span className="skill-item">{skill}</span>
+                  </SkillCardGlow>
                 ))}
               </div>
             </div>
@@ -410,7 +553,7 @@ export default function Home() {
         <ScrollReveal>
           <div className="section-header">
             <span className="section-number">Chapter 06</span>
-            <h2 className="section-title">Achievements & Certifications</h2>
+            <h2 className="section-title">Achievements &amp; Certifications</h2>
           </div>
         </ScrollReveal>
 
@@ -442,7 +585,12 @@ export default function Home() {
       <ChristmasLights />
 
       {/* ===== CONTACT SECTION ===== */}
-      <section id="contact" className="section section-with-bg">
+      <section id="contact" className="section section-with-bg" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Contact Particles — z0 */}
+        <Suspense fallback={null}>
+          <ContactParticles />
+        </Suspense>
+
         <div className="section-bg-image">
           <Image
             src="/images/section-texture-bg.png"
@@ -452,14 +600,14 @@ export default function Home() {
           />
         </div>
         <ScrollReveal>
-          <div className="section-header">
+          <div className="section-header" style={{ position: 'relative', zIndex: 1 }}>
             <span className="section-number">Chapter 07</span>
             <h2 className="section-title">Contact</h2>
           </div>
         </ScrollReveal>
 
         <ScrollReveal>
-          <div className="contact-container">
+          <div className="contact-container" style={{ position: 'relative', zIndex: 1 }}>
             <p className="contact-text">
               Ready to fight the Demogorgon together? Whether you have a project idea,
               an opportunity, or just want to connect — the gate between our worlds is always open.
