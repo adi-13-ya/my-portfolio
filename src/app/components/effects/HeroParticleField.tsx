@@ -5,18 +5,18 @@ import { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import useReducedMotion from '../../hooks/useReducedMotion';
+import useAccentColor from '../../hooks/useAccentColor';
 
-function Particles() {
+function Particles({ accent }: { accent: string }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const { viewport } = useThree();
 
   const count = 1500;
 
-  const { positions, velocities, colors, dummy } = useMemo(() => {
+  const { positions, velocities, dummy } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
     const dummy = new THREE.Object3D();
 
     for (let i = 0; i < count; i++) {
@@ -28,18 +28,8 @@ function Particles() {
       velocities[i * 3 + 1] = Math.random() * 0.005 + 0.003; // Drift upward
       velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.001;
 
-      // 60% white, 40% red
-      if (Math.random() < 0.6) {
-        colors[i * 3] = 0.9 + Math.random() * 0.1;
-        colors[i * 3 + 1] = 0.85 + Math.random() * 0.1;
-        colors[i * 3 + 2] = 0.85 + Math.random() * 0.1;
-      } else {
-        colors[i * 3] = 0.75 + Math.random() * 0.2;
-        colors[i * 3 + 1] = Math.random() * 0.1;
-        colors[i * 3 + 2] = Math.random() * 0.08;
-      }
     }
-    return { positions, velocities, colors, dummy };
+    return { positions, velocities, dummy };
   }, []);
 
   // Track mouse in NDC
@@ -91,19 +81,20 @@ function Particles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial vertexColors={false} color="#ffffff" transparent opacity={0.7} />
+      <meshBasicMaterial vertexColors={false} color={accent} transparent opacity={0.7} />
     </instancedMesh>
   );
 }
 
 function ParticleScene() {
+  const accent = useAccentColor();
   return (
     <Canvas
       camera={{ position: [0, 0, 5], fov: 75 }}
       style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}
       gl={{ alpha: true, antialias: false }}
     >
-      <Particles />
+      <Particles key={accent} accent={accent} />
     </Canvas>
   );
 }

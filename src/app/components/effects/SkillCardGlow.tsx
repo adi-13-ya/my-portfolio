@@ -44,7 +44,7 @@ export default function SkillCardGlow({ children }: { children: React.ReactNode 
             width={dimensions.w}
             height={dimensions.h}
             fill="none"
-            stroke="#C0392B"
+            stroke="var(--st-red)"
             strokeWidth="1.5"
             strokeDasharray={perimeter}
             strokeDashoffset={perimeter}

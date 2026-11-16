@@ -67,7 +67,7 @@ export default function DemogorgonButton({
             marginTop: '0.75rem',
             fontFamily: 'monospace',
             fontSize: '0.75rem',
-            color: '#C0392B',
+            color: 'var(--st-red)',
             opacity: 0,
             animation: 'successFadeIn 300ms ease forwards',
             textAlign: 'center',

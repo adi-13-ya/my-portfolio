@@ -43,8 +43,8 @@ export default function TimelineWire() {
         top: 0,
         width: 2,
         height: '100%',
-        background: '#C0392B',
-        boxShadow: '0 0 8px #C0392B, 0 0 2px #C0392B',
+        background: 'var(--st-red)',
+        boxShadow: '0 0 8px var(--st-red), 0 0 2px var(--st-red)',
         transformOrigin: 'top center',
         zIndex: 0,
       }}

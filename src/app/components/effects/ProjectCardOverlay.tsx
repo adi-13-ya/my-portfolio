@@ -39,7 +39,7 @@ export default function ProjectCardOverlay({ imageSrc, altText }: ProjectCardOve
           right: 8,
           fontFamily: 'monospace',
           fontSize: '10px',
-          color: '#C0392B',
+          color: 'var(--st-red)',
           background: '#0d0d0d',
           border: '1px solid #8B0000',
           padding: '2px 6px',

@@ -17,7 +17,7 @@ export function IconLightning({ size = 20, className = '' }: IconProps) {
             <defs>
                 <linearGradient id="lightning-grad" x1="4" y1="2" x2="18" y2="22">
                     <stop offset="0%" stopColor="#ff4444" />
-                    <stop offset="100%" stopColor="#e50914" />
+                    <stop offset="100%" stopColor="var(--st-red)" />
                 </linearGradient>
             </defs>
         </svg>

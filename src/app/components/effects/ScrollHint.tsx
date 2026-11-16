@@ -36,7 +36,7 @@ export default function ScrollHint() {
         style={{
           fontFamily: 'monospace',
           fontSize: '0.7rem',
-          color: '#C0392B',
+          color: 'var(--st-red)',
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
         }}
@@ -47,7 +47,7 @@ export default function ScrollHint() {
         style={{
           display: 'inline-block',
           animation: 'scrollBounce 2s ease-in-out infinite',
-          color: '#C0392B',
+          color: 'var(--st-red)',
           fontSize: '1.2rem',
         }}
       >

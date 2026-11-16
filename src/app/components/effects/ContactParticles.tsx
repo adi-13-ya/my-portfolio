@@ -5,8 +5,9 @@ import { useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import useReducedMotion from '../../hooks/useReducedMotion';
+import useAccentColor from '../../hooks/useAccentColor';
 
-function DriftingParticles() {
+function DriftingParticles({ color }: { color: string }) {
   const pointsRef = useRef<THREE.Points>(null);
   const count = 800;
 
@@ -44,7 +45,7 @@ function DriftingParticles() {
         />
       </bufferGeometry>
       <pointsMaterial
-        color="#C0392B"
+        color={color}
         size={0.03}
         transparent
         opacity={0.5}
@@ -55,6 +56,7 @@ function DriftingParticles() {
 }
 
 function ContactParticlesScene() {
+  const accent = useAccentColor();
   return (
     <Canvas
       camera={{ position: [0, 0, 5], fov: 60 }}
@@ -66,7 +68,7 @@ function ContactParticlesScene() {
       }}
       gl={{ alpha: true }}
     >
-      <DriftingParticles />
+      <DriftingParticles color={accent} />
     </Canvas>
   );
 }

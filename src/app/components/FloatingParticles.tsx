@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function FloatingParticles() {
     const [particles, setParticles] = useState<Array<{
@@ -37,7 +37,7 @@ export default function FloatingParticles() {
                         height: p.size,
                         animationDuration: p.duration,
                         animationDelay: p.delay,
-                        background: `rgba(229, 9, 20, ${p.opacity})`,
+                        background: `rgba(var(--accent-rgb), ${p.opacity})`,
                     }}
                 />
             ))}

@@ -5,8 +5,9 @@ import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import * as THREE from 'three';
+import useAccentColor from '../../hooks/useAccentColor';
 
-function BrainMesh() {
+function BrainMesh({ color }: { color: string }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -20,13 +21,14 @@ function BrainMesh() {
     <Float speed={1.5} rotationIntensity={0.4} floatIntensity={1}>
       <mesh ref={meshRef}>
         <icosahedronGeometry args={[1.2, 1]} />
-        <meshBasicMaterial color="#C0392B" wireframe />
+        <meshBasicMaterial color={color} wireframe />
       </mesh>
     </Float>
   );
 }
 
 export default function FloatingBrainModel() {
+  const accent = useAccentColor();
   return (
     <div style={{ width: 300, height: 300, pointerEvents: 'none' }}>
       <Canvas
@@ -35,7 +37,7 @@ export default function FloatingBrainModel() {
         gl={{ alpha: true }}
       >
         <ambientLight intensity={0.5} />
-        <BrainMesh />
+        <BrainMesh color={accent} />
       </Canvas>
     </div>
   );

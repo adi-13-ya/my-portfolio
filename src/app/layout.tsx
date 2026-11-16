@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CursorWrapper from "./components/effects/CursorWrapper";
+import ThemeProvider from "./components/ThemeContext";
 
 
 export const metadata: Metadata = {
-  title: "Aditya Gujar | Portfolio from the Upside Down",
-  description: "Results-driven technologist ranked among the top 5 in IT at VIT, skilled in data structures, algorithms, and machine learning. Explore my projects, skills, and experience in a Stranger Things themed portfolio.",
-  keywords: ["Aditya Gujar", "Portfolio", "Developer", "AI", "Machine Learning", "Deep Learning", "Web Development", "VIT"],
+  title: "Aditya Gujar | AI Security Researcher & Builder",
+  description: "Portfolio of Aditya Gujar — B.Tech IT student at VIT (CGPA 9.52, top 2% of branch), researcher in LLM security and multilingual prompt-injection defense, patent co-inventor, and builder of intelligent systems. Styled after Stranger Things and Locke & Key.",
+  keywords: ["Aditya Gujar", "Portfolio", "AI Security", "LLM Security", "Prompt Injection", "Machine Learning", "Post-Quantum Cryptography", "VIT", "Research"],
   authors: [{ name: "Aditya Gujar" }],
   openGraph: {
-    title: "Aditya Gujar | Portfolio from the Upside Down",
-    description: "Explore the portfolio of Aditya Gujar — AI enthusiast, developer, and builder of intelligent systems.",
+    title: "Aditya Gujar | AI Security Researcher & Builder",
+    description: "Explore the portfolio of Aditya Gujar — LLM security researcher, patent co-inventor, and builder of intelligent systems.",
     type: "website",
   },
 };
@@ -27,8 +28,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <CursorWrapper />
-        {children}
+        <ThemeProvider>
+          <CursorWrapper />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

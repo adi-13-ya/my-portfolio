@@ -1,50 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getWindow = (): any => typeof window !== 'undefined' ? window : {};
+import { useTheme } from './ThemeContext';
+import { getThemeMusic } from '../lib/themeMusic';
 
 export default function SoundToggle() {
-    const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const { theme } = useTheme();
 
-    // Sync with the global audio state from IntroScreen
-    useEffect(() => {
-        const checkInterval = setInterval(() => {
-            const w = getWindow();
-            if (w.__stSynthPlaying !== undefined) {
-                setPlaying(!!w.__stSynthPlaying);
-            }
-        }, 500);
-        return () => clearInterval(checkInterval);
-    }, []);
+  // Sync with the music engine (started by the intro screen)
+  useEffect(() => {
+    const checkInterval = setInterval(() => {
+      setPlaying(getThemeMusic().playing);
+    }, 500);
+    return () => clearInterval(checkInterval);
+  }, []);
 
-    const toggleSound = () => {
-        const w = getWindow();
+  const toggleSound = () => {
+    const music = getThemeMusic();
+    if (playing) {
+      music.stop();
+      setPlaying(false);
+    } else {
+      music.start(theme);
+      setPlaying(true);
+    }
+  };
 
-        if (playing) {
-            // Stop audio
-            if (typeof w.__stSynthStop === 'function') {
-                w.__stSynthStop();
-            }
-            setPlaying(false);
-        } else {
-            // Restart audio
-            if (typeof w.__stSynthStart === 'function') {
-                w.__stSynthStart();
-            }
-            setPlaying(true);
-        }
-    };
-
-    return (
-        <button
-            className="sound-toggle"
-            onClick={toggleSound}
-            title={playing ? 'Mute the Upside Down' : 'Enter the Upside Down'}
-            aria-label={playing ? 'Mute sound' : 'Play sound'}
-        >
-            {playing ? '🔊' : '🔇'}
-        </button>
-    );
+  return (
+    <button
+      className="sound-toggle"
+      onClick={toggleSound}
+      title={playing ? 'Mute the theme music' : 'Play the theme music'}
+      aria-label={playing ? 'Mute sound' : 'Play sound'}
+    >
+      {playing ? '🔊' : '🔇'}
+    </button>
+  );
 }

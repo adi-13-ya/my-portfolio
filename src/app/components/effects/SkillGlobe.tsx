@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import useReducedMotion from '../../hooks/useReducedMotion';
+import useAccentColor from '../../hooks/useAccentColor';
 
 function SkillLabels({ skills }: { skills: string[] }) {
   // Fibonacci sphere distribution
@@ -52,6 +53,7 @@ function SkillLabels({ skills }: { skills: string[] }) {
 
 export default function SkillGlobe({ skills }: { skills: string[] }) {
   const prefersReduced = useReducedMotion();
+  const accent = useAccentColor('#8B0000');
   if (prefersReduced) return null;
 
   return (
@@ -63,7 +65,7 @@ export default function SkillGlobe({ skills }: { skills: string[] }) {
       >
         <mesh>
           <sphereGeometry args={[2, 16, 16]} />
-          <meshBasicMaterial color="#8B0000" wireframe />
+          <meshBasicMaterial color={accent} wireframe />
         </mesh>
         <SkillLabels skills={skills} />
         <OrbitControls

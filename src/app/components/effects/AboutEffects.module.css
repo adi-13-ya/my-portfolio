@@ -2,7 +2,7 @@
 
 .tooltip {
   position: relative;
-  color: #C0392B;
+  color: var(--st-red);
   cursor: default;
 }
 
@@ -13,7 +13,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: #0d0d0d;
-  color: #C0392B;
+  color: var(--st-red);
   font-family: monospace;
   font-size: 0.7rem;
   padding: 4px 10px;
@@ -33,14 +33,14 @@
 }
 
 @keyframes flickerBgAnim {
-  0% { background-color: rgba(139, 0, 0, 0); }
-  25% { background-color: rgba(139, 0, 0, 0.08); }
-  50% { background-color: rgba(139, 0, 0, 0); }
-  75% { background-color: rgba(139, 0, 0, 0.05); }
-  100% { background-color: rgba(139, 0, 0, 0); }
+  0% { background-color: rgba(var(--accent-rgb), 0); }
+  25% { background-color: rgba(var(--accent-rgb), 0.08); }
+  50% { background-color: rgba(var(--accent-rgb), 0); }
+  75% { background-color: rgba(var(--accent-rgb), 0.05); }
+  100% { background-color: rgba(var(--accent-rgb), 0); }
 }
 
 .deepLearningHover {
-  color: #C0392B;
+  color: var(--st-red);
   cursor: default;
 }
