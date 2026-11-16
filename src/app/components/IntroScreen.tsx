@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import * as THREE from 'three';
-import { getThemeMusic } from '../lib/themeMusic';
 
 interface Particle {
   id: number;
@@ -15,6 +14,9 @@ interface Particle {
   animationDelay: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getWindow = (): any => typeof window !== 'undefined' ? window : {};
+
 export default function IntroScreen() {
   const [entered, setEntered] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -22,12 +24,22 @@ export default function IntroScreen() {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [showEnterBtn, setShowEnterBtn] = useState(false);
   const [zoomPhase, setZoomPhase] = useState<'idle' | 'zooming' | 'done'>('idle');
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const textMeshGroupRef = useRef<THREE.Group | null>(null);
+
+  // Expose audio controls globally so SoundToggle can access it
+  useEffect(() => {
+    const w = getWindow();
+    w.__strangerThingsSynth = {
+      getRef: () => null,
+      getContext: () => null,
+    };
+  }, []);
 
   useEffect(() => {
     // Generate particles only on client
@@ -201,11 +213,25 @@ export default function IntroScreen() {
     setEntered(true);
     setZoomPhase('zooming');
 
-    // Start the procedural theme music (synthwave arpeggio / music box)
+    // Start audio (new mp3 file)
     try {
-      const currentTheme =
-        document.documentElement.dataset.theme === 'lockekey' ? 'lockekey' : 'stranger';
-      getThemeMusic().start(currentTheme);
+      const audio = new Audio('/audio/stranger-things-theme-new.mp3');
+      audio.loop = true;
+      audio.volume = 0.5;
+      audio.play().catch(e => console.warn('Audio play failed:', e));
+      audioRef.current = audio;
+
+      // Store reference for SoundToggle
+      const w = getWindow();
+      w.__stSynthPlaying = true;
+      w.__stSynthStop = () => {
+        audio.pause();
+        w.__stSynthPlaying = false;
+      };
+      w.__stSynthStart = () => {
+        audio.play().catch(e => console.warn('Audio play failed:', e));
+        w.__stSynthPlaying = true;
+      };
     } catch (e) {
       console.warn('Audio playback failed:', e);
     }

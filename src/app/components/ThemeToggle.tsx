@@ -1,21 +1,14 @@
 'use client';
 
 import { useTheme } from './ThemeContext';
-import { getThemeMusic } from '../lib/themeMusic';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
-  const handleToggle = () => {
-    const next = theme === 'stranger' ? 'lockekey' : 'stranger';
-    getThemeMusic().setTheme(next);
-    toggleTheme();
-  };
-
   return (
     <button
       className="theme-toggle"
-      onClick={handleToggle}
+      onClick={toggleTheme}
       title={
         theme === 'stranger'
           ? 'Unlock the Keyhouse (Locke & Key theme)'
